@@ -60,7 +60,7 @@ pub const PageSelector = struct {
 
         for (this.pseudo_classes.items) |*pseudo| {
             try dest.writeChar(':');
-            try pseudo.toCss(W, dest);
+            try pseudo.toCss(dest);
         }
     }
 
@@ -84,7 +84,7 @@ pub const PageMarginRule = struct {
         // dest.add_mapping(self.loc);
 
         try dest.writeChar('@');
-        try this.margin_box.toCss(W, dest);
+        try this.margin_box.toCss(dest);
         try this.declarations.toCssBlock(W, dest);
     }
 
@@ -152,7 +152,7 @@ pub const PageRule = struct {
                 } else {
                     try dest.delim(',', false);
                 }
-                try selector.toCss(W, dest);
+                try selector.toCss(dest);
             }
         }
 
@@ -169,7 +169,7 @@ pub const PageRule = struct {
             const important = comptime std.mem.eql(u8, decl_field_name, "important_declarations");
             for (decls.items) |*decl| {
                 try dest.newline();
-                try decl.toCss(W, dest, important);
+                try decl.toCss(dest, important);
                 if (i != len - 1 or !dest.minify) {
                     try dest.writeChar(';');
                 }
@@ -193,7 +193,7 @@ pub const PageRule = struct {
                     }
                     try dest.newline();
                 }
-                try rule.toCss(W, dest);
+                try rule.toCss(dest);
             }
         }
 

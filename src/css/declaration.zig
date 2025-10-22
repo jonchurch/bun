@@ -107,7 +107,7 @@ pub const DeclarationBlock = struct {
             const is_important = comptime std.mem.eql(u8, decl_field_name, "important_declarations");
 
             for (decls.items) |*decl| {
-                try decl.toCss(W, dest, is_important);
+                try decl.toCss(dest, is_important);
                 if (i != length - 1) {
                     try dest.writeChar(';');
                     try dest.whitespace();
@@ -135,7 +135,7 @@ pub const DeclarationBlock = struct {
             const is_important = comptime std.mem.eql(u8, decl_field_name, "important_declarations");
             for (decls.items) |*decl| {
                 try dest.newline();
-                try decl.toCss(W, dest, is_important);
+                try decl.toCss(dest, is_important);
                 if (i != length - 1 or !dest.minify) {
                     try dest.writeChar(';');
                 }

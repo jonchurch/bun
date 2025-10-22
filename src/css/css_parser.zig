@@ -524,7 +524,7 @@ pub fn DefineRectShorthand(comptime T: type, comptime V: type) type {
                 .bottom = this.bottom,
                 .left = this.left,
             };
-            return rect.toCss(W, dest);
+            return rect.toCss(dest);
         }
     };
 }
@@ -537,7 +537,7 @@ pub fn DefineSizeShorthand(comptime T: type, comptime V: type) type {
                 .a = @field(this, std.meta.fields(T)[0].name),
                 .b = @field(this, std.meta.fields(T)[1].name),
             };
-            return size.toCss(W, dest);
+            return size.toCss(dest);
             // TODO: unfuck this
             // @panic(todo_stuff.depth);
         }
@@ -826,10 +826,10 @@ pub fn DeriveToCss(comptime T: type) type {
                                     // Unwrap it from the optional
                                     if (@typeInfo(variant_field.type) == .optional) {
                                         if (@field(@field(this, field.name), variant_field.name)) |*value| {
-                                            try value.toCss(W, dest);
+                                            try value.toCss(dest);
                                         }
                                     } else {
-                                        try @field(@field(this, field.name), variant_field.name).toCss(W, dest);
+                                        try @field(@field(this, field.name), variant_field.name).toCss(dest);
                                     }
 
                                     // Emit a space if there are more fields after
@@ -3173,7 +3173,7 @@ pub fn StyleSheet(comptime AtRule: type) type {
                 var references = CssModuleReferences{};
                 printer.css_module = CssModule.new(allocator, config, &this.sources, project_root, &references);
 
-                try this.rules.toCss(W, printer);
+                try this.rules.toCss(printer);
                 try printer.newline();
 
                 return ToCssResultInternal{
@@ -3187,7 +3187,7 @@ pub fn StyleSheet(comptime AtRule: type) type {
                     .references = references,
                 };
             } else {
-                try this.rules.toCss(W, printer);
+                try this.rules.toCss(printer);
                 try printer.newline();
                 return ToCssResultInternal{
                     .dependencies = printer.dependencies,
@@ -7009,7 +7009,7 @@ pub const to_css = struct {
         defer printer.deinit();
         switch (T) {
             CSSString => try CSSStringFns.toCss(this, W, &printer),
-            else => try this.toCss(W, &printer),
+            else => try this.toCss(&printer),
         }
         return s.items;
     }
@@ -7017,7 +7017,7 @@ pub const to_css = struct {
     pub fn fromList(comptime T: type, this: []const T, dest: *Printer) PrintErr!void {
         const len = this.len;
         for (this, 0..) |*val, idx| {
-            try val.toCss(W, dest);
+            try val.toCss(dest);
             if (idx < len - 1) {
                 try dest.delim(',', false);
             }
@@ -7028,7 +7028,7 @@ pub const to_css = struct {
     pub fn fromBabyList(comptime T: type, this: *const bun.BabyList(T), dest: *Printer) PrintErr!void {
         const len = this.len;
         for (this.sliceConst(), 0..) |*val, idx| {
-            try val.toCss(W, dest);
+            try val.toCss(dest);
             if (idx < len - 1) {
                 try dest.delim(',', false);
             }

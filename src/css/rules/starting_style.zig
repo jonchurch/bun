@@ -24,7 +24,7 @@ pub fn StartingStyleRule(comptime R: type) type {
             try dest.writeChar('{');
             dest.indent();
             try dest.newline();
-            try this.rules.toCss(W, dest);
+            try this.rules.toCss(dest);
             dest.dedent();
             try dest.newline();
             try dest.writeChar('}');

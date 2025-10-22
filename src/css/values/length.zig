@@ -563,8 +563,8 @@ pub const Length = union(enum) {
 
     pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return switch (this.*) {
-            .value => |a| a.toCss(W, dest),
-            .calc => |c| c.toCss(W, dest),
+            .value => |a| a.toCss(dest),
+            .calc => |c| c.toCss(dest),
         };
     }
 

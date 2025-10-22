@@ -81,7 +81,7 @@ pub const attrs = struct {
                 switch (this.operation) {
                     .exists => {},
                     .with_value => |v| {
-                        try v.operator.toCss(W, dest);
+                        try v.operator.toCss(dest);
                         // try v.expected_value.toCss(dest);
                         try CSSStringFns.toCss(&v.expected_value, W, dest);
                         switch (v.case_sensitivity) {

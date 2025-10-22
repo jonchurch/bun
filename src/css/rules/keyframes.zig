@@ -181,7 +181,7 @@ pub const KeyframeSelector = union(enum) {
                 if (dest.minify and p.v == 1.0) {
                     try dest.writeStr("to");
                 } else {
-                    try p.toCss(W, dest);
+                    try p.toCss(dest);
                 }
             },
             .from => {
@@ -220,7 +220,7 @@ pub const Keyframe = struct {
                 try dest.delim(',', false);
             }
             first = false;
-            try sel.toCss(W, dest);
+            try sel.toCss(dest);
         }
 
         try this.declarations.toCssBlock(W, dest);
@@ -262,9 +262,9 @@ pub const KeyframesRule = struct {
                 }
 
                 try dest.writeChar('@');
-                try css.VendorPrefix.fromName(prefix_name).toCss(W, dest);
+                try css.VendorPrefix.fromName(prefix_name).toCss(dest);
                 try dest.writeStr("keyframes ");
-                try this.name.toCss(W, dest);
+                try this.name.toCss(dest);
                 try dest.whitespace();
                 try dest.writeChar('{');
                 dest.indent();
@@ -277,7 +277,7 @@ pub const KeyframesRule = struct {
                         try dest.writeChar('\n'); // no indent
                     }
                     try dest.newline();
-                    try keyframe.toCss(W, dest);
+                    try keyframe.toCss(dest);
                 }
                 dest.dedent();
                 try dest.newline();

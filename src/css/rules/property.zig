@@ -89,7 +89,7 @@ pub const PropertyRule = struct {
 
         try dest.writeStr("syntax:");
         try dest.whitespace();
-        try this.syntax.toCss(W, dest);
+        try this.syntax.toCss(dest);
         try dest.writeChar(';');
         try dest.newline();
 
@@ -107,7 +107,7 @@ pub const PropertyRule = struct {
 
             try dest.writeStr("initial-value:");
             try dest.whitespace();
-            try initial_value.toCss(W, dest);
+            try initial_value.toCss(dest);
 
             if (!dest.minify) {
                 try dest.writeChar(';');

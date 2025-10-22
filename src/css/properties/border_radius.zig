@@ -78,11 +78,11 @@ pub const BorderRadius = struct {
             .left = &this.bottom_left.b,
         };
 
-        try widths.toCss(W, dest);
+        try widths.toCss(dest);
 
         if (!widths.eql(&heights)) {
             try dest.delim('/', true);
-            try heights.toCss(W, dest);
+            try heights.toCss(dest);
         }
     }
 

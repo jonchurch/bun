@@ -94,27 +94,27 @@ pub fn GenericBorder(comptime S: type, comptime P: u8) type {
 
         pub fn toCss(this: *const This, W: anytype, dest: *Printer(W)) PrintErr!void {
             if (this.eql(&This.default())) {
-                try this.style.toCss(W, dest);
+                try this.style.toCss(dest);
                 return;
             }
 
             var needs_space = false;
             if (!this.width.eql(&BorderSideWidth.default())) {
-                try this.width.toCss(W, dest);
+                try this.width.toCss(dest);
                 needs_space = true;
             }
             if (!this.style.eql(&S.default())) {
                 if (needs_space) {
                     try dest.writeStr(" ");
                 }
-                try this.style.toCss(W, dest);
+                try this.style.toCss(dest);
                 needs_space = true;
             }
             if (!this.color.eql(&CssColor{ .current_color = {} })) {
                 if (needs_space) {
                     try dest.writeStr(" ");
                 }
-                try this.color.toCss(W, dest);
+                try this.color.toCss(dest);
                 needs_space = true;
             }
             return;

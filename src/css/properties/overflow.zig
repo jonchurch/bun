@@ -23,10 +23,10 @@ pub const Overflow = struct {
     }
 
     pub fn toCss(this: *const Overflow, comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
-        try this.x.toCss(W, dest);
+        try this.x.toCss(dest);
         if (this.y != this.x) {
             try dest.writeChar(' ');
-            try this.y.toCss(W, dest);
+            try this.y.toCss(dest);
         }
     }
 

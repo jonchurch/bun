@@ -57,7 +57,7 @@ pub const Composes = struct {
 
         if (this.from) |*from| {
             try dest.writeStr(" from ");
-            try from.toCss(W, dest);
+            try from.toCss(dest);
         }
     }
 

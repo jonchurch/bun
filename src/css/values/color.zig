@@ -216,28 +216,28 @@ pub const CssColor = union(enum) {
                 const srgb = SRGB.fromFloatColor(float.*);
                 const as_css_color = srgb.intoCssColor(dest.allocator);
                 defer as_css_color.deinit(dest.allocator);
-                try as_css_color.toCss(W, dest);
+                try as_css_color.toCss(dest);
             },
             .light_dark => |*light_dark| {
                 if (!dest.targets.isCompatible(css.compat.Feature.light_dark)) {
                     try dest.writeStr("var(--buncss-light");
                     try dest.delim(',', false);
-                    try light_dark.light.toCss(W, dest);
+                    try light_dark.light.toCss(dest);
                     try dest.writeChar(')');
                     try dest.whitespace();
                     try dest.writeStr("var(--buncss-dark");
                     try dest.delim(',', false);
-                    try light_dark.dark.toCss(W, dest);
+                    try light_dark.dark.toCss(dest);
                     return dest.writeChar(')');
                 }
 
                 try dest.writeStr("light-dark(");
-                try light_dark.light.toCss(W, dest);
+                try light_dark.light.toCss(dest);
                 try dest.delim(',', false);
-                try light_dark.dark.toCss(W, dest);
+                try light_dark.dark.toCss(dest);
                 return dest.writeChar(')');
             },
-            .system => |*system| return system.toCss(W, dest),
+            .system => |*system| return system.toCss(dest),
         }
     }
 

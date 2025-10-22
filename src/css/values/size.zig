@@ -44,7 +44,7 @@ pub fn Size2D(comptime T: type) type {
         pub fn valToCss(val: *const T, comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
             return switch (T) {
                 f32 => CSSNumberFns.toCss(val, W, dest),
-                else => val.toCss(W, dest),
+                else => val.toCss(dest),
             };
         }
 

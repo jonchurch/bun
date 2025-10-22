@@ -700,7 +700,7 @@ pub const serialize = struct {
             .attribute_in_no_namespace => |*v| {
                 try dest.writeChar('[');
                 try css.css_values.ident.IdentFns.toCss(&v.local_name, W, dest);
-                try v.operator.toCss(W, dest);
+                try v.operator.toCss(dest);
 
                 if (dest.minify) {
                     // PERF: should we put a scratch buffer in the printer
@@ -739,7 +739,7 @@ pub const serialize = struct {
                         const vp = dest.vendor_prefix;
                         if (vp.webkit or vp.moz) {
                             try dest.writeChar(':');
-                            try vp.toCss(W, dest);
+                            try vp.toCss(dest);
                             try dest.writeStr("any(");
                         } else {
                             try dest.writeStr(":is(");
@@ -752,7 +752,7 @@ pub const serialize = struct {
                         const vp = dest.vendor_prefix._or(v.vendor_prefix);
                         if (vp.webkit or vp.moz) {
                             try dest.writeChar(':');
-                            try vp.toCss(W, dest);
+                            try vp.toCss(dest);
                             try dest.writeStr("any(");
                         } else {
                             try dest.writeStr(":is(");
@@ -860,7 +860,7 @@ pub const serialize = struct {
             .dir => {
                 const dir = pseudo_class.dir.direction;
                 try dest.writeStr(":dir(");
-                try dir.toCss(W, dest);
+                try dir.toCss(dest);
                 return try dest.writeStr(")");
             },
             else => {},
@@ -879,7 +879,7 @@ pub const serialize = struct {
                 else
                     prefix;
 
-                try vp.toCss(W, d);
+                try vp.toCss(d);
                 try d.writeStr(val);
             }
             pub inline fn pseudo(
@@ -935,7 +935,7 @@ pub const serialize = struct {
                     bits.@"and"(css.VendorPrefix, dest.vendor_prefix, prefix).orNone()
                 else
                     prefix;
-                try vp.toCss(W, dest);
+                try vp.toCss(dest);
                 if (vp.webkit or vp.moz) {
                     try dest.writeStr("full-screen");
                 } else {
@@ -1042,7 +1042,7 @@ pub const serialize = struct {
                     bits.@"and"(css.VendorPrefix, d.vendor_prefix, prefix).orNone()
                 else
                     prefix;
-                try vp.toCss(W, d);
+                try vp.toCss(d);
                 debug("VENDOR PREFIX {d} OVERRIDE {d}", .{ vp.asBits(), d.vendor_prefix.asBits() });
                 return vp;
             }
@@ -1123,22 +1123,22 @@ pub const serialize = struct {
             .view_transition => try dest.writeStr("::view-transition"),
             .view_transition_group => |v| {
                 try dest.writeStr("::view-transition-group(");
-                try v.part_name.toCss(W, dest);
+                try v.part_name.toCss(dest);
                 try dest.writeChar(')');
             },
             .view_transition_image_pair => |v| {
                 try dest.writeStr("::view-transition-image-pair(");
-                try v.part_name.toCss(W, dest);
+                try v.part_name.toCss(dest);
                 try dest.writeChar(')');
             },
             .view_transition_old => |v| {
                 try dest.writeStr("::view-transition-old(");
-                try v.part_name.toCss(W, dest);
+                try v.part_name.toCss(dest);
                 try dest.writeChar(')');
             },
             .view_transition_new => |v| {
                 try dest.writeStr("::view-transition-new(");
-                try v.part_name.toCss(W, dest);
+                try v.part_name.toCss(dest);
                 try dest.writeChar(')');
             },
             .custom => |val| {
@@ -1343,7 +1343,7 @@ pub const tocss_servo = struct {
                 try dest.writeChar(')');
             },
             .pseudo_element => |*p| {
-                try p.toCss(W, dest);
+                try p.toCss(dest);
             },
             .id => |s| {
                 try dest.writeChar('#');
@@ -1356,7 +1356,7 @@ pub const tocss_servo = struct {
                 try dest.writeStr(str);
             },
             .local_name => |local_name| {
-                try local_name.toCss(W, dest);
+                try local_name.toCss(dest);
             },
             .explicit_universal_type => {
                 try dest.writeChar('*');
@@ -1381,7 +1381,7 @@ pub const tocss_servo = struct {
             .attribute_in_no_namespace => |v| {
                 try dest.writeChar('[');
                 try css.IdentFns.toCss(&v.local_name, W, dest);
-                try v.operator.toCss(W, dest);
+                try v.operator.toCss(dest);
                 try css.CSSStringFns.toCss(&v.value, W, dest);
                 switch (v.case_sensitivity) {
                     .case_sensitive, .ascii_case_insensitive_if_in_html_element_in_html_document => {},
@@ -1391,7 +1391,7 @@ pub const tocss_servo = struct {
                 try dest.writeChar(']');
             },
             .attribute_other => |attr_selector| {
-                try attr_selector.toCss(W, dest);
+                try attr_selector.toCss(dest);
             },
             // Pseudo-classes
             .root => {
@@ -1440,7 +1440,7 @@ pub const tocss_servo = struct {
                     .has => try dest.writeStr(":has("),
                     .any => |v| {
                         try dest.writeChar(':');
-                        try v.vendor_prefix.toCss(W, dest);
+                        try v.vendor_prefix.toCss(dest);
                         try dest.writeStr("any(");
                     },
                     else => unreachable,
@@ -1457,7 +1457,7 @@ pub const tocss_servo = struct {
                 try dest.writeStr(")");
             },
             .non_ts_pseudo_class => |*pseudo| {
-                try pseudo.toCss(W, dest);
+                try pseudo.toCss(dest);
             },
             .nesting => try dest.writeChar('&'),
         }

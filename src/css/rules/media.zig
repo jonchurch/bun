@@ -24,19 +24,19 @@ pub fn MediaRule(comptime R: type) type {
 
         pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             if (dest.minify and this.query.alwaysMatches()) {
-                try this.rules.toCss(W, dest);
+                try this.rules.toCss(dest);
                 return;
             }
             // #[cfg(feature = "sourcemap")]
             // dest.addMapping(this.loc);
 
             try dest.writeStr("@media ");
-            try this.query.toCss(W, dest);
+            try this.query.toCss(dest);
             try dest.whitespace();
             try dest.writeChar('{');
             dest.indent();
             try dest.newline();
-            try this.rules.toCss(W, dest);
+            try this.rules.toCss(dest);
             dest.dedent();
             try dest.newline();
             return dest.writeChar('}');

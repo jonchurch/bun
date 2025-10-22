@@ -100,7 +100,7 @@ pub const Angle = union(Tag) {
             const v: f32 = 0.0;
             try CSSNumberFns.toCss(&v, W, dest);
         } else {
-            return this.toCss(W, dest);
+            return this.toCss(dest);
         }
     }
 

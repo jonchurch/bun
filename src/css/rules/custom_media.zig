@@ -29,7 +29,7 @@ pub const CustomMediaRule = struct {
         try dest.writeStr("@custom-media ");
         try css_values.ident.DashedIdentFns.toCss(&this.name, W, dest);
         try dest.writeChar(' ');
-        try this.query.toCss(W, dest);
+        try this.query.toCss(dest);
         try dest.writeChar(';');
     }
 };

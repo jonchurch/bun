@@ -255,13 +255,13 @@ function generatePropertyImpl(property_defs: Record<string, PropertyDef>): strin
                 ? `CSSIntegerFns.toCss(&${value}, W, dest)`
                 : meta.ty.includes("ArrayList")
                   ? `css.generic.toCss(${meta.ty}, ${value}, W, dest)`
-                  : `${value}.toCss(W, dest)`;
+                  : `${value}.toCss(dest)`;
           return `.${escapeIdent(name)} => |*value| ${to_css},`;
         })
         .join("\n")}
-      .all => |*keyword| keyword.toCss(W, dest),
-      .unparsed => |*unparsed| unparsed.value.toCss(W, dest, false),
-      .custom => |*c| c.value.toCss(W, dest, c.name == .custom),
+      .all => |*keyword| keyword.toCss(dest),
+      .unparsed => |*unparsed| unparsed.value.toCss(dest, false),
+      .custom => |*c| c.value.toCss(dest, c.name == .custom),
     };
   }
 

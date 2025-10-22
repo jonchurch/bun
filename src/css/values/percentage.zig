@@ -49,7 +49,7 @@ pub const Percentage = struct {
                 try dest.writeStr(bun.strings.trimLeadingChar(stream.getWritten(), '0'));
             }
         } else {
-            try percent.toCss(W, dest);
+            try percent.toCss(dest);
         }
     }
 
@@ -167,9 +167,9 @@ pub fn DimensionPercentage(comptime D: type) type {
 
         pub fn toCss(this: *const @This(), comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
             return switch (this.*) {
-                .dimension => |*length| length.toCss(W, dest),
-                .percentage => |*per| per.toCss(W, dest),
-                .calc => |calc| calc.toCss(W, dest),
+                .dimension => |*length| length.toCss(dest),
+                .percentage => |*per| per.toCss(dest),
+                .calc => |calc| calc.toCss(dest),
             };
         }
 

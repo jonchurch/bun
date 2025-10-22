@@ -196,7 +196,7 @@ pub const EasingFunction = union(enum) {
                         }
                         try dest.writeFmt("steps({d}", .{this.steps.count});
                         try dest.delim(',', false);
-                        try this.steps.position.toCss(W, dest);
+                        try this.steps.position.toCss(dest);
                         return try dest.writeChar(')');
                     },
                     .linear, .ease, .ease_in, .ease_out, .ease_in_out => unreachable,

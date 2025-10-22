@@ -20,7 +20,7 @@ pub fn NestingRule(comptime R: type) type {
             if (dest.context() == null) {
                 try dest.writeStr("@nest ");
             }
-            return try this.style.toCss(W, dest);
+            return try this.style.toCss(dest);
         }
 
         pub fn deepClone(this: *const @This(), allocator: std.mem.Allocator) This {

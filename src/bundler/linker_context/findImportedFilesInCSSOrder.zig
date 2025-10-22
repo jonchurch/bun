@@ -640,7 +640,7 @@ fn debugCssOrderImpl(this: *LinkerContext, order: *const BabyList(Chunk.CssImpor
                         &symbols,
                     );
 
-                    condition.toCss(W, &printer) catch unreachable;
+                    condition.toCss(&printer) catch unreachable;
                     if (j != entry.conditions.len - 1) {
                         arrlist.appendSlice(arena.allocator(), ", ") catch unreachable;
                     }

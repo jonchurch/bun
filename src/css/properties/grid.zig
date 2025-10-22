@@ -81,8 +81,8 @@ pub const TrackList = struct {
                 }
 
                 switch (item.*) {
-                    .track_repeat => |*repeat| try repeat.toCss(W, dest),
-                    .track_size => |*size| try size.toCss(W, dest),
+                    .track_repeat => |*repeat| try repeat.toCss(dest),
+                    .track_size => |*size| try size.toCss(dest),
                 }
             }
 
@@ -160,17 +160,17 @@ pub const TrackSize = union(enum) {
 
     pub fn toCss(this: *const @This(), comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
         switch (this.*) {
-            .track_breadth => |breadth| try breadth.toCss(W, dest),
+            .track_breadth => |breadth| try breadth.toCss(dest),
             .min_max => |mm| {
                 try dest.writeStr("minmax(");
-                try mm.min.toCss(W, dest);
+                try mm.min.toCss(dest);
                 try dest.delim(',', false);
-                try mm.max.toCss(W, dest);
+                try mm.max.toCss(dest);
                 try dest.writeChar(')');
             },
             .fit_content => |len| {
                 try dest.writeStr("fit-content(");
-                try len.toCss(W, dest);
+                try len.toCss(dest);
                 try dest.writeChar(')');
             },
         }
@@ -206,7 +206,7 @@ pub const TrackSizeList = struct {
             } else {
                 try dest.writeChar(' ');
             }
-            try item.toCss(W, dest);
+            try item.toCss(dest);
         }
     }
 };
@@ -279,7 +279,7 @@ pub const TrackBreadth = union(enum) {
             .auto => try dest.writeStr("auto"),
             .min_content => try dest.writeStr("min-content"),
             .max_content => try dest.writeStr("max-content"),
-            .length => |len| try len.toCss(W, dest),
+            .length => |len| try len.toCss(dest),
             // .flex => |flex| try css.CSSNumberFns.serializeDimension(&flex, "fr", W, dest),
             .flex => |flex| css.serializer.serializeDimension(flex, "fr", W, dest),
         }
@@ -336,7 +336,7 @@ pub const TrackRepeat = struct {
 
     pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         try dest.writeStr("repeat(");
-        try this.count.toCss(W, dest);
+        try this.count.toCss(dest);
         try dest.delim(',', false);
 
         var track_sizes_index = 0;
@@ -355,7 +355,7 @@ pub const TrackRepeat = struct {
                 } else if (!first) {
                     try dest.writeChar(' ');
                 }
-                try size.toCss(W, dest);
+                try size.toCss(dest);
             }
 
             first = false;

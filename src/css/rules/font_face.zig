@@ -55,13 +55,13 @@ pub const FontFaceProperty = union(enum) {
                 if (comptime multi) {
                     const len = value.items.len;
                     for (value.items, 0..) |*val, idx| {
-                        try val.toCss(W, d);
+                        try val.toCss(d);
                         if (idx < len - 1) {
                             try d.delim(',', false);
                         }
                     }
                 } else {
-                    try value.toCss(W, d);
+                    try value.toCss(d);
                 }
             }
         };
@@ -75,7 +75,7 @@ pub const FontFaceProperty = union(enum) {
             .custom => |custom| {
                 try dest.writeStr(this.custom.name.asStr());
                 try dest.delim(':', false);
-                return custom.value.toCss(W, dest, true);
+                return custom.value.toCss(dest, true);
             },
         };
     }
@@ -329,7 +329,7 @@ pub const FontStyle = union(enum) {
                 try dest.writeStr("oblique");
                 if (!angle.eql(&FontStyle.defaultObliqueAngle())) {
                     try dest.writeChar(' ');
-                    try angle.toCss(W, dest);
+                    try angle.toCss(dest);
                 }
             },
         }
@@ -451,10 +451,10 @@ pub const Source = union(enum) {
 
     pub fn toCss(this: *const Source, dest: *Printer) PrintErr!void {
         switch (this.*) {
-            .url => try this.url.toCss(W, dest),
+            .url => try this.url.toCss(dest),
             .local => {
                 try dest.writeStr("local(");
-                try this.local.toCss(W, dest);
+                try this.local.toCss(dest);
                 try dest.writeChar(')');
             },
         }
@@ -570,11 +570,11 @@ pub const UrlSource = struct {
     }
 
     pub fn toCss(this: *const UrlSource, dest: *Printer) PrintErr!void {
-        try this.url.toCss(W, dest);
+        try this.url.toCss(dest);
         if (this.format) |*format| {
             try dest.whitespace();
             try dest.writeStr("format(");
-            try format.toCss(W, dest);
+            try format.toCss(dest);
             try dest.writeChar(')');
         }
 
@@ -611,7 +611,7 @@ pub const FontFaceRule = struct {
         const len = this.properties.items.len;
         for (this.properties.items, 0..) |*prop, i| {
             try dest.newline();
-            try prop.toCss(W, dest);
+            try prop.toCss(dest);
             if (i != len - 1 or !dest.minify) {
                 try dest.writeChar(';');
             }

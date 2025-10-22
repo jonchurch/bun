@@ -26,7 +26,7 @@ pub const UnknownAtRule = struct {
 
         if (this.prelude.v.items.len > 0) {
             try dest.writeChar(' ');
-            try this.prelude.toCss(W, dest, false);
+            try this.prelude.toCss(dest, false);
         }
 
         if (this.block) |*block| {
@@ -34,7 +34,7 @@ pub const UnknownAtRule = struct {
             try dest.writeChar('{');
             dest.indent();
             try dest.newline();
-            try block.toCss(W, dest, false);
+            try block.toCss(dest, false);
             dest.dedent();
             try dest.newline();
             try dest.writeChar('}');

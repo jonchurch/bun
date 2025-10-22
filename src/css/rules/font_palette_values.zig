@@ -53,7 +53,7 @@ pub const FontPaletteValuesRule = struct {
         const len = this.properties.items.len;
         for (this.properties.items, 0..) |*prop, i| {
             try dest.newline();
-            try prop.toCss(W, dest);
+            try prop.toCss(dest);
             if (i != len - 1 or !dest.minify) {
                 try dest.writeChar(';');
             }
@@ -91,12 +91,12 @@ pub const FontPaletteValuesProperty = union(enum) {
             .font_family => |*f| {
                 try dest.writeStr("font-family");
                 try dest.delim(':', false);
-                try f.toCss(W, dest);
+                try f.toCss(dest);
             },
             .base_palette => |*b| {
                 try dest.writeStr("base-palette");
                 try dest.delim(':', false);
-                try b.toCss(W, dest);
+                try b.toCss(dest);
             },
             .override_colors => |*o| {
                 try dest.writeStr("override-colors");
@@ -106,7 +106,7 @@ pub const FontPaletteValuesProperty = union(enum) {
             .custom => |*custom| {
                 try dest.writeStr(custom.name.asStr());
                 try dest.delim(':', false);
-                try custom.value.toCss(W, dest, true);
+                try custom.value.toCss(dest, true);
             },
         }
     }
@@ -149,7 +149,7 @@ pub const OverrideColors = struct {
     pub fn toCss(this: *const OverrideColors, dest: *Printer) PrintErr!void {
         try css.CSSIntegerFns.toCss(&@as(i32, @intCast(this.index)), W, dest);
         try dest.writeChar(' ');
-        try this.color.toCss(W, dest);
+        try this.color.toCss(dest);
     }
 
     pub fn deepClone(this: *const @This(), allocator: std.mem.Allocator) @This() {

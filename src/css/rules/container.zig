@@ -80,7 +80,7 @@ pub const ContainerSizeFeatureId = enum {
 
     pub fn toCssWithPrefix(this: *const @This(), prefix: []const u8, dest: *Printer) PrintErr!void {
         try dest.writeStr(prefix);
-        try this.toCss(W, dest);
+        try this.toCss(dest);
     }
 };
 
@@ -106,7 +106,7 @@ pub const StyleQuery = union(enum) {
 
     pub fn toCss(this: *const StyleQuery, dest: *Printer) PrintErr!void {
         switch (this.*) {
-            .feature => |f| try f.toCss(W, dest, false),
+            .feature => |f| try f.toCss(dest, false),
             .not => |c| {
                 try dest.writeStr("not ");
                 return try css.media_query.toCssWithParensIfNeeded(
@@ -216,7 +216,7 @@ pub const ContainerCondition = union(enum) {
 
     pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         switch (this.*) {
-            .feature => |f| try f.toCss(W, dest),
+            .feature => |f| try f.toCss(dest),
             .not => |c| {
                 try dest.writeStr("not ");
                 return try css.media_query.toCssWithParensIfNeeded(
@@ -229,7 +229,7 @@ pub const ContainerCondition = union(enum) {
             .operation => |op| try css.media_query.operationToCss(ContainerCondition, op.operator, &op.conditions, W, dest),
             .style => |query| {
                 try dest.writeStr("style(");
-                try query.toCss(W, dest);
+                try query.toCss(dest);
                 try dest.writeChar(')');
             },
         }
@@ -321,21 +321,21 @@ pub fn ContainerRule(comptime R: type) type {
 
             try dest.writeStr("@container ");
             if (this.name) |*name| {
-                try name.toCss(W, dest);
+                try name.toCss(dest);
                 try dest.writeChar(' ');
             }
 
             // Don't downlevel range syntax in container queries.
             const exclude = dest.targets.exclude;
             bun.bits.insert(css.targets.Features, &dest.targets.exclude, .media_queries);
-            try this.condition.toCss(W, dest);
+            try this.condition.toCss(dest);
             dest.targets.exclude = exclude;
 
             try dest.whitespace();
             try dest.writeChar('{');
             dest.indent();
             try dest.newline();
-            try this.rules.toCss(W, dest);
+            try this.rules.toCss(dest);
             dest.dedent();
             try dest.newline();
             try dest.writeChar('}');

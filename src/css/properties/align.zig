@@ -216,24 +216,24 @@ pub const JustifyContent = union(enum) {
     pub fn toCss(this: *const @This(), comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
         return switch (this.*) {
             .normal => dest.writeStr("normal"),
-            .content_distribution => |value| value.toCss(W, dest),
+            .content_distribution => |value| value.toCss(dest),
             .content_position => |*cp| {
                 if (cp.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
-                return cp.value.toCss(W, dest);
+                return cp.value.toCss(dest);
             },
             .left => |*l| {
                 if (l.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
                 return dest.writeStr("left");
             },
             .right => |*r| {
                 if (r.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
                 return dest.writeStr("right");
@@ -407,25 +407,25 @@ pub const JustifySelf = union(enum) {
             .auto => try dest.writeStr("auto"),
             .normal => try dest.writeStr("normal"),
             .stretch => try dest.writeStr("stretch"),
-            .baseline_position => |*baseline_position| baseline_position.toCss(W, dest),
+            .baseline_position => |*baseline_position| baseline_position.toCss(dest),
             .self_position => |*self_position| {
                 if (self_position.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
 
-                try self_position.value.toCss(W, dest);
+                try self_position.value.toCss(dest);
             },
             .left => |*left| {
                 if (left.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
                 try dest.writeStr("left");
             },
             .right => |*right| {
                 if (right.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
                 try dest.writeStr("right");
@@ -601,29 +601,29 @@ pub const JustifyItems = union(enum) {
         switch (this.*) {
             .normal => try dest.writeStr("normal"),
             .stretch => try dest.writeStr("stretch"),
-            .baseline_position => |*val| try val.toCss(W, dest),
+            .baseline_position => |*val| try val.toCss(dest),
             .self_position => |*sp| {
                 if (sp.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
-                try sp.value.toCss(W, dest);
+                try sp.value.toCss(dest);
             },
             .left => |*l| {
                 if (l.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
                 try dest.writeStr("left");
             },
             .right => |*r| {
                 if (r.overflow) |*overflow| {
-                    try overflow.toCss(W, dest);
+                    try overflow.toCss(dest);
                     try dest.writeStr(" ");
                 }
                 try dest.writeStr("right");
             },
-            .legacy => |l| try l.toCss(W, dest),
+            .legacy => |l| try l.toCss(dest),
         }
     }
 
@@ -760,10 +760,10 @@ pub const Gap = struct {
     }
 
     pub fn toCss(this: *const Gap, comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
-        try this.row.toCss(W, dest);
+        try this.row.toCss(dest);
         if (!this.column.eql(&this.row)) {
             try dest.writeStr(" ");
-            try this.column.toCss(W, dest);
+            try this.column.toCss(dest);
         }
     }
 
@@ -816,7 +816,7 @@ pub const PlaceItems = struct {
     }
 
     pub fn toCss(this: *const PlaceItems, comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
-        try this.@"align".toCss(W, dest);
+        try this.@"align".toCss(dest);
         const is_equal = switch (this.justify) {
             .normal => this.@"align".eql(&AlignItems{ .normal = {} }),
             .stretch => this.@"align".eql(&AlignItems{ .stretch = {} }),
@@ -833,7 +833,7 @@ pub const PlaceItems = struct {
 
         if (!is_equal) {
             try dest.writeStr(" ");
-            try this.justify.toCss(W, dest);
+            try this.justify.toCss(dest);
         }
     }
 
@@ -887,7 +887,7 @@ pub const PlaceSelf = struct {
     }
 
     pub fn toCss(this: *const PlaceSelf, comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
-        try this.@"align".toCss(W, dest);
+        try this.@"align".toCss(dest);
         const is_equal = switch (this.justify) {
             .auto => true,
             .normal => this.@"align" == .normal,
@@ -905,7 +905,7 @@ pub const PlaceSelf = struct {
 
         if (!is_equal) {
             try dest.writeStr(" ");
-            try this.justify.toCss(W, dest);
+            try this.justify.toCss(dest);
         }
     }
 
@@ -985,7 +985,7 @@ pub const PlaceContent = struct {
     }
 
     pub fn toCss(this: *const PlaceContent, comptime W: type, dest: *css.Printer(W)) css.PrintErr!void {
-        try this.@"align".toCss(W, dest);
+        try this.@"align".toCss(dest);
         const is_equal = switch (this.justify) {
             .normal => brk: {
                 if (this.@"align" == .normal) break :brk true;
@@ -1004,7 +1004,7 @@ pub const PlaceContent = struct {
 
         if (!is_equal) {
             try dest.writeStr(" ");
-            try this.justify.toCss(W, dest);
+            try this.justify.toCss(dest);
         }
     }
 

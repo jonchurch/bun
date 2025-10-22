@@ -62,7 +62,7 @@ pub const Position = union(enum) {
             .absolute => dest.writeStr("absolute"),
             .fixed => dest.writeStr("fixed"),
             .sticky => |prefix| {
-                try prefix.toCss(W, dest);
+                try prefix.toCss(dest);
                 return dest.writeStr("sticky");
             },
         };

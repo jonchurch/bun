@@ -51,7 +51,7 @@ pub const ImportConditions = struct {
             try dest.writeStr(" layer");
             if (lyr.v) |l| {
                 try dest.writeChar('(');
-                try l.toCss(W, dest);
+                try l.toCss(dest);
                 try dest.writeChar(')');
             }
         }
@@ -59,17 +59,17 @@ pub const ImportConditions = struct {
         if (this.supports) |*sup| {
             try dest.writeStr(" supports");
             if (sup.* == .declaration) {
-                try sup.toCss(W, dest);
+                try sup.toCss(dest);
             } else {
                 try dest.writeChar('(');
-                try sup.toCss(W, dest);
+                try sup.toCss(dest);
                 try dest.writeChar(')');
             }
         }
 
         if (this.media.media_queries.items.len > 0) {
             try dest.writeChar(' ');
-            try this.media.toCss(W, dest);
+            try this.media.toCss(dest);
         }
     }
 
@@ -236,7 +236,7 @@ pub const ImportRule = struct {
             try dest.writeStr(" layer");
             if (lyr.v) |l| {
                 try dest.writeChar('(');
-                try l.toCss(W, dest);
+                try l.toCss(dest);
                 try dest.writeChar(')');
             }
         }
@@ -244,17 +244,17 @@ pub const ImportRule = struct {
         if (this.supports) |*sup| {
             try dest.writeStr(" supports");
             if (sup.* == .declaration) {
-                try sup.toCss(W, dest);
+                try sup.toCss(dest);
             } else {
                 try dest.writeChar('(');
-                try sup.toCss(W, dest);
+                try sup.toCss(dest);
                 try dest.writeChar(')');
             }
         }
 
         if (this.media.media_queries.items.len > 0) {
             try dest.writeChar(' ');
-            try this.media.toCss(W, dest);
+            try this.media.toCss(dest);
         }
         try dest.writeStr(";");
     }

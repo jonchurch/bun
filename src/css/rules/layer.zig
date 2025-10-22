@@ -159,14 +159,14 @@ pub fn LayerBlockRule(comptime R: type) type {
             try dest.writeStr("@layer");
             if (this.name) |*name| {
                 try dest.writeChar(' ');
-                try name.toCss(W, dest);
+                try name.toCss(dest);
             }
 
             try dest.whitespace();
             try dest.writeChar('{');
             dest.indent();
             try dest.newline();
-            try this.rules.toCss(W, dest);
+            try this.rules.toCss(dest);
             dest.dedent();
             try dest.newline();
             try dest.writeChar('}');

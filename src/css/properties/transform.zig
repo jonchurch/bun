@@ -72,7 +72,7 @@ pub const TransformList = struct {
 
     fn toCssBase(this: *const @This(), dest: *Printer) PrintErr!void {
         for (this.v.items) |*item| {
-            try item.toCss(W, dest);
+            try item.toCss(dest);
         }
     }
 
@@ -540,54 +540,54 @@ pub const Transform = union(enum) {
             .translate => |t| {
                 if (dest.minify and t.x.isZero() and !t.y.isZero()) {
                     try dest.writeStr("translateY(");
-                    try t.y.toCss(W, dest);
+                    try t.y.toCss(dest);
                 } else {
                     try dest.writeStr("translate(");
-                    try t.x.toCss(W, dest);
+                    try t.x.toCss(dest);
                     if (!t.y.isZero()) {
                         try dest.delim(',', false);
-                        try t.y.toCss(W, dest);
+                        try t.y.toCss(dest);
                     }
                 }
                 try dest.writeChar(')');
             },
             .translate_x => |x| {
                 try dest.writeStr(if (dest.minify) "translate(" else "translateX(");
-                try x.toCss(W, dest);
+                try x.toCss(dest);
                 try dest.writeChar(')');
             },
             .translate_y => |y| {
                 try dest.writeStr("translateY(");
-                try y.toCss(W, dest);
+                try y.toCss(dest);
                 try dest.writeChar(')');
             },
             .translate_z => |z| {
                 try dest.writeStr("translateZ(");
-                try z.toCss(W, dest);
+                try z.toCss(dest);
                 try dest.writeChar(')');
             },
             .translate_3d => |t| {
                 if (dest.minify and !t.x.isZero() and t.y.isZero() and t.z.isZero()) {
                     try dest.writeStr("translate(");
-                    try t.x.toCss(W, dest);
+                    try t.x.toCss(dest);
                 } else if (dest.minify and t.x.isZero() and !t.y.isZero() and t.z.isZero()) {
                     try dest.writeStr("translateY(");
-                    try t.y.toCss(W, dest);
+                    try t.y.toCss(dest);
                 } else if (dest.minify and t.x.isZero() and t.y.isZero() and !t.z.isZero()) {
                     try dest.writeStr("translateZ(");
-                    try t.z.toCss(W, dest);
+                    try t.z.toCss(dest);
                 } else if (dest.minify and t.z.isZero()) {
                     try dest.writeStr("translate(");
-                    try t.x.toCss(W, dest);
+                    try t.x.toCss(dest);
                     try dest.delim(',', false);
-                    try t.y.toCss(W, dest);
+                    try t.y.toCss(dest);
                 } else {
                     try dest.writeStr("translate3d(");
-                    try t.x.toCss(W, dest);
+                    try t.x.toCss(dest);
                     try dest.delim(',', false);
-                    try t.y.toCss(W, dest);
+                    try t.y.toCss(dest);
                     try dest.delim(',', false);
-                    try t.z.toCss(W, dest);
+                    try t.z.toCss(dest);
                 }
                 try dest.writeChar(')');
             },
@@ -704,7 +704,7 @@ pub const Transform = union(enum) {
                     try s.y.toCssWithUnitlessZero(W, dest);
                 } else {
                     try dest.writeStr("skew(");
-                    try s.x.toCss(W, dest);
+                    try s.x.toCss(dest);
                     if (!s.y.isZero()) {
                         try dest.delim(',', false);
                         try s.y.toCssWithUnitlessZero(W, dest);
@@ -724,7 +724,7 @@ pub const Transform = union(enum) {
             },
             .perspective => |len| {
                 try dest.writeStr("perspective(");
-                try len.toCss(W, dest);
+                try len.toCss(dest);
                 try dest.writeChar(')');
             },
             .matrix => |m| {
@@ -948,13 +948,13 @@ pub const Translate = union(enum) {
         switch (this.*) {
             .none => try dest.writeStr("none"),
             .xyz => |xyz| {
-                try xyz.x.toCss(W, dest);
+                try xyz.x.toCss(dest);
                 if (!xyz.y.isZero() or !xyz.z.isZero()) {
                     try dest.writeChar(' ');
-                    try xyz.y.toCss(W, dest);
+                    try xyz.y.toCss(dest);
                     if (!xyz.z.isZero()) {
                         try dest.writeChar(' ');
-                        try xyz.z.toCss(W, dest);
+                        try xyz.z.toCss(dest);
                     }
                 }
             },
@@ -1082,7 +1082,7 @@ pub const Rotate = struct {
             try dest.writeChar(' ');
         }
 
-        try this.angle.toCss(W, dest);
+        try this.angle.toCss(dest);
     }
 
     /// Converts the rotation to a transform function.
@@ -1149,14 +1149,14 @@ pub const Scale = union(enum) {
         switch (this.*) {
             .none => try dest.writeStr("none"),
             .xyz => |xyz| {
-                try xyz.x.toCss(W, dest);
+                try xyz.x.toCss(dest);
                 const z_val = xyz.z.intoF32();
                 if (!xyz.y.eql(&xyz.x) or z_val != 1.0) {
                     try dest.writeChar(' ');
-                    try xyz.y.toCss(W, dest);
+                    try xyz.y.toCss(dest);
                     if (z_val != 1.0) {
                         try dest.writeChar(' ');
-                        try xyz.z.toCss(W, dest);
+                        try xyz.z.toCss(dest);
                     }
                 }
             },

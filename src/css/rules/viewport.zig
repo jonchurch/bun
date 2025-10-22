@@ -18,7 +18,7 @@ pub const ViewportRule = struct {
         // #[cfg(feature = "sourcemap")]
         // dest.add_mapping(self.loc);
         try dest.writeChar('@');
-        try this.vendor_prefix.toCss(W, dest);
+        try this.vendor_prefix.toCss(dest);
         try dest.writeStr("viewport");
         try this.declarations.toCssBlock(W, dest);
     }

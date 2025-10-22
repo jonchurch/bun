@@ -25,7 +25,7 @@ pub const property_id_mixin = struct {
                 } else {
                     try dest.delim(',', false);
                 }
-                try prefix.toCss(W, dest);
+                try prefix.toCss(dest);
                 try dest.writeStr(name);
             }
         }
@@ -70,7 +70,7 @@ pub const property_mixin = struct {
     /// Serializes the CSS property, with an optional `!important` flag.
     pub fn toCss(this: *const Property, dest: *Printer, important: bool) PrintErr!void {
         if (this.* == .custom) {
-            try this.custom.name.toCss(W, dest);
+            try this.custom.name.toCss(dest);
             try dest.delim(':', false);
             try this.valueToCss(W, dest);
             if (important) {
@@ -93,7 +93,7 @@ pub const property_mixin = struct {
                     try dest.writeChar(';');
                     try dest.newline();
                 }
-                try p.toCss(W, dest);
+                try p.toCss(dest);
                 try dest.writeStr(name);
                 try dest.delim(':', false);
                 try this.valueToCss(W, dest);

@@ -14,7 +14,7 @@ pub const TailwindAtRule = struct {
     pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         try dest.writeStr("@tailwind");
         try dest.whitespace();
-        try this.style_name.toCss(W, dest);
+        try this.style_name.toCss(dest);
         try dest.writeChar(';');
     }
 

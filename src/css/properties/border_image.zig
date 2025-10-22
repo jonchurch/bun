@@ -138,30 +138,30 @@ pub const BorderImage = struct {
         dest: *css.Printer(W),
     ) PrintErr!void {
         if (!css.generic.eql(Image, source, &Image.default())) {
-            try source.toCss(W, dest);
+            try source.toCss(dest);
         }
         const has_slice = !css.generic.eql(BorderImageSlice, slice, &BorderImageSlice.default());
         const has_width = !css.generic.eql(Rect(BorderImageSideWidth), width, &Rect(BorderImageSideWidth).all(BorderImageSideWidth.default()));
         const has_outset = !css.generic.eql(Rect(LengthOrNumber), outset, &Rect(LengthOrNumber).all(LengthOrNumber{ .number = 0.0 }));
         if (has_slice or has_width or has_outset) {
             try dest.writeStr(" ");
-            try slice.toCss(W, dest);
+            try slice.toCss(dest);
             if (has_width or has_outset) {
                 try dest.delim('/', true);
             }
             if (has_width) {
-                try width.toCss(W, dest);
+                try width.toCss(dest);
             }
 
             if (has_outset) {
                 try dest.delim('/', true);
-                try outset.toCss(W, dest);
+                try outset.toCss(dest);
             }
         }
 
         if (!css.generic.eql(BorderImageRepeat, repeat, &BorderImageRepeat.default())) {
             try dest.writeStr(" ");
-            return repeat.toCss(W, dest);
+            return repeat.toCss(dest);
         }
 
         return;
@@ -223,10 +223,10 @@ pub const BorderImageRepeat = struct {
     }
 
     pub fn toCss(this: *const BorderImageRepeat, dest: *Printer) PrintErr!void {
-        try this.horizontal.toCss(W, dest);
+        try this.horizontal.toCss(dest);
         if (this.horizontal != this.vertical) {
             try dest.writeStr(" ");
-            try this.vertical.toCss(W, dest);
+            try this.vertical.toCss(dest);
         }
     }
 
@@ -356,7 +356,7 @@ pub const BorderImageSlice = struct {
     }
 
     pub fn toCss(this: *const BorderImageSlice, dest: *Printer) PrintErr!void {
-        try this.offsets.toCss(W, dest);
+        try this.offsets.toCss(dest);
         if (this.fill) {
             try dest.writeStr(" fill");
         }

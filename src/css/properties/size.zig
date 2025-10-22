@@ -108,15 +108,15 @@ pub const Size = union(enum) {
             .auto => dest.writeStr("auto"),
             .contain => dest.writeStr("contain"),
             .min_content => |vp| {
-                try vp.toCss(W, dest);
+                try vp.toCss(dest);
                 try dest.writeStr("min-content");
             },
             .max_content => |vp| {
-                try vp.toCss(W, dest);
+                try vp.toCss(dest);
                 try dest.writeStr("max-content");
             },
             .fit_content => |vp| {
-                try vp.toCss(W, dest);
+                try vp.toCss(dest);
                 try dest.writeStr("fit-content");
             },
             .stretch => |vp| {
@@ -132,10 +132,10 @@ pub const Size = union(enum) {
             },
             .fit_content_function => |l| {
                 try dest.writeStr("fit-content(");
-                try l.toCss(W, dest);
+                try l.toCss(dest);
                 try dest.writeChar(')');
             },
-            .length_percentage => |l| return l.toCss(W, dest),
+            .length_percentage => |l| return l.toCss(dest),
         };
     }
 
@@ -268,15 +268,15 @@ pub const MaxSize = union(enum) {
             .none => try dest.writeStr("none"),
             .contain => try dest.writeStr("contain"),
             .min_content => |vp| {
-                try vp.toCss(W, dest);
+                try vp.toCss(dest);
                 try dest.writeStr("min-content");
             },
             .max_content => |vp| {
-                try vp.toCss(W, dest);
+                try vp.toCss(dest);
                 try dest.writeStr("max-content");
             },
             .fit_content => |vp| {
-                try vp.toCss(W, dest);
+                try vp.toCss(dest);
                 try dest.writeStr("fit-content");
             },
             .stretch => |vp| {
@@ -292,10 +292,10 @@ pub const MaxSize = union(enum) {
             },
             .fit_content_function => |l| {
                 try dest.writeStr("fit-content(");
-                try l.toCss(W, dest);
+                try l.toCss(dest);
                 try dest.writeChar(')');
             },
-            .length_percentage => |l| try l.toCss(W, dest),
+            .length_percentage => |l| try l.toCss(dest),
         }
     }
 
@@ -364,7 +364,7 @@ pub const AspectRatio = struct {
 
         if (this.ratio) |*ratio| {
             if (this.auto) try dest.writeChar(' ');
-            try ratio.toCss(W, dest);
+            try ratio.toCss(dest);
         }
     }
 

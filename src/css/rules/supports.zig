@@ -369,7 +369,7 @@ pub const SupportsCondition = union(enum) {
         needs_parens: bool,
     ) css.PrintErr!void {
         if (needs_parens) try dest.writeStr("(");
-        try this.toCss(W, dest);
+        try this.toCss(dest);
         if (needs_parens) try dest.writeStr(")");
     }
 };
@@ -391,12 +391,12 @@ pub fn SupportsRule(comptime R: type) type {
             // dest.add_mapping(self.loc);
 
             try dest.writeStr("@supports ");
-            try this.condition.toCss(W, dest);
+            try this.condition.toCss(dest);
             try dest.whitespace();
             try dest.writeChar('{');
             dest.indent();
             try dest.newline();
-            try this.rules.toCss(W, dest);
+            try this.rules.toCss(dest);
             dest.dedent();
             try dest.newline();
             try dest.writeChar('}');

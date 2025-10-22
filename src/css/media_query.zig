@@ -70,7 +70,7 @@ pub const MediaList = struct {
                 try dest.delim(',', false);
             }
             first = false;
-            try query.toCss(W, dest);
+            try query.toCss(dest);
         }
         return;
     }
@@ -217,7 +217,7 @@ pub const MediaQuery = struct {
 
     pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         if (this.qualifier) |qual| {
-            try qual.toCss(W, dest);
+            try qual.toCss(dest);
             try dest.writeChar(' ');
         }
 
@@ -276,7 +276,7 @@ pub fn toCssWithParensIfNeeded(
     if (needs_parens) {
         try dest.writeChar('(');
     }
-    try v.toCss(W, dest);
+    try v.toCss(dest);
     if (needs_parens) {
         try dest.writeChar(')');
     }
@@ -354,7 +354,7 @@ pub fn operationToCss(comptime QueryCondition: type, operator: Operator, conditi
     if (conditions.items.len == 1) return;
     for (conditions.items[1..]) |*item| {
         try dest.writeChar(' ');
-        try operator.toCss(W, dest);
+        try operator.toCss(dest);
         try dest.writeChar(' ');
         try toCssWithParensIfNeeded(item, W, dest, item.needsParens(operator, &dest.targets));
     }
@@ -381,7 +381,7 @@ pub const MediaCondition = union(enum) {
     pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .feature => |*f| {
-                try f.toCss(W, dest);
+                try f.toCss(dest);
             },
             .not => |c| {
                 try dest.writeStr("not ");
@@ -753,7 +753,7 @@ pub const MediaFeatureId = enum {
             },
             else => {
                 try dest.writeStr(prefix);
-                return this.toCss(W, dest);
+                return this.toCss(dest);
             },
         }
     }
@@ -892,12 +892,12 @@ pub fn QueryFeature(comptime FeatureId: type) type {
 
             switch (this.*) {
                 .boolean => {
-                    try this.boolean.name.toCss(W, dest);
+                    try this.boolean.name.toCss(dest);
                 },
                 .plain => {
-                    try this.plain.name.toCss(W, dest);
+                    try this.plain.name.toCss(dest);
                     try dest.delim(':', false);
-                    try this.plain.value.toCss(W, dest);
+                    try this.plain.value.toCss(dest);
                 },
                 .range => {
                     // If range syntax is unsupported, use min/max prefix if possible.
@@ -911,9 +911,9 @@ pub fn QueryFeature(comptime FeatureId: type) type {
                             dest,
                         );
                     }
-                    try this.range.name.toCss(W, dest);
-                    try this.range.operator.toCss(W, dest);
-                    try this.range.value.toCss(W, dest);
+                    try this.range.name.toCss(dest);
+                    try this.range.operator.toCss(dest);
+                    try this.range.value.toCss(dest);
                 },
                 .interval => |interval| {
                     if (dest.targets.shouldCompileSame(.media_interval_syntax)) {
@@ -936,11 +936,11 @@ pub fn QueryFeature(comptime FeatureId: type) type {
                         );
                     }
 
-                    try interval.start.toCss(W, dest);
-                    try interval.start_operator.toCss(W, dest);
-                    try interval.name.toCss(W, dest);
-                    try interval.end_operator.toCss(W, dest);
-                    try interval.end.toCss(W, dest);
+                    try interval.start.toCss(dest);
+                    try interval.start_operator.toCss(dest);
+                    try interval.name.toCss(dest);
+                    try interval.end_operator.toCss(dest);
+                    try interval.end.toCss(dest);
                 },
             }
 
@@ -1247,7 +1247,7 @@ pub const MediaFeatureValue = union(enum) {
         dest: *Printer(W),
     ) PrintErr!void {
         switch (this.*) {
-            .length => |len| return len.toCss(W, dest),
+            .length => |len| return len.toCss(dest),
             .number => |num| return CSSNumberFns.toCss(&num, W, dest),
             .integer => |int| return CSSIntegerFns.toCss(&int, W, dest),
             .boolean => |b| {
@@ -1257,8 +1257,8 @@ pub const MediaFeatureValue = union(enum) {
                     return dest.writeChar('0');
                 }
             },
-            .resolution => |res| return res.toCss(W, dest),
-            .ratio => |ratio| return ratio.toCss(W, dest),
+            .resolution => |res| return res.toCss(dest),
+            .ratio => |ratio| return ratio.toCss(dest),
             .ident => |id| return IdentFns.toCss(&id, W, dest),
             .env => |*env| return EnvironmentVariable.toCss(env, W, dest, false),
         }
@@ -1432,7 +1432,7 @@ pub fn MediaFeatureName(comptime FeatureId: type) type {
 
         pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             return switch (this.*) {
-                .standard => |v| v.toCss(W, dest),
+                .standard => |v| v.toCss(dest),
                 .custom => |d| DashedIdentFns.toCss(&d, W, dest),
                 .unknown => |v| IdentFns.toCss(&v, W, dest),
             };
@@ -1547,7 +1547,7 @@ fn writeMinMax(
     if (prefix) |p| {
         try name.toCssWithPrefix(p, W, dest);
     } else {
-        try name.toCss(W, dest);
+        try name.toCss(dest);
     }
 
     try dest.delim(':', false);
@@ -1560,9 +1560,9 @@ fn writeMinMax(
 
     if (adjusted) |*val| {
         defer val.deinit(dest.allocator);
-        try val.toCss(W, dest);
+        try val.toCss(dest);
     } else {
-        try value.toCss(W, dest);
+        try value.toCss(dest);
     }
 
     return dest.writeChar(')');
