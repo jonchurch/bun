@@ -334,7 +334,7 @@ pub fn hasToCss(comptime T: type) bool {
     };
 }
 
-pub inline fn toCss(comptime T: type, this: *const T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+pub inline fn toCss(comptime T: type, this: *const T, dest: *Printer) PrintErr!void {
     if (@typeInfo(T) == .pointer) {
         const TT = std.meta.Child(T);
         return toCss(TT, this.*, W, dest);

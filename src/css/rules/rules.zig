@@ -82,7 +82,7 @@ pub fn CssRule(comptime Rule: type) type {
 
         const This = @This();
 
-        pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             return switch (this.*) {
                 .media => |x| x.toCss(W, dest),
                 .import => |x| x.toCss(W, dest),
@@ -461,7 +461,7 @@ pub fn CssRuleList(comptime AtRule: type) type {
             return;
         }
 
-        pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             var first = true;
             var last_without_block = false;
 

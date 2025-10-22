@@ -55,7 +55,7 @@ pub fn StyleRule(comptime R: type) type {
             return css.selector.isCompatible(this.selectors.v.slice(), targets);
         }
 
-        pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             if (this.vendor_prefix.isEmpty()) {
                 try this.toCssBase(W, dest);
             } else {
@@ -81,7 +81,7 @@ pub fn StyleRule(comptime R: type) type {
             }
         }
 
-        fn toCssBase(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        fn toCssBase(this: *const This, dest: *Printer) PrintErr!void {
             // If supported, or there are no targets, preserve nesting. Otherwise, write nested rules after parent.
             const supports_nesting = this.rules.v.items.len == 0 or
                 !css.Targets.shouldCompileSame(

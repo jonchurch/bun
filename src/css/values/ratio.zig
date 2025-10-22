@@ -38,7 +38,7 @@ pub const Ratio = struct {
         return .{ .result = Ratio{ .numerator = first, .denominator = second } };
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         try CSSNumberFns.toCss(&this.numerator, W, dest);
         if (this.denominator != 1.0) {
             try dest.delim('/', true);

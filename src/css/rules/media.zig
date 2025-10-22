@@ -22,7 +22,7 @@ pub fn MediaRule(comptime R: type) type {
             return this.rules.v.items.len == 0 or this.query.neverMatches();
         }
 
-        pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             if (dest.minify and this.query.alwaysMatches()) {
                 try this.rules.toCss(W, dest);
                 return;

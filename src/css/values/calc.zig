@@ -1805,7 +1805,7 @@ pub const RoundingStrategy = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 
@@ -1866,7 +1866,7 @@ pub const Constant = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 

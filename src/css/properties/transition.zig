@@ -84,7 +84,7 @@ pub const Transition = struct {
         } };
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         try this.property.toCss(W, dest);
         if (!this.duration.isZero() or !this.delay.isZero()) {
             try dest.writeChar(' ');

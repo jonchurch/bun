@@ -96,7 +96,7 @@ pub const DeclarationBlock = struct {
         return this.declarations.items.len + this.important_declarations.items.len;
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         const length = this.len();
         var i: usize = 0;
 
@@ -120,7 +120,7 @@ pub const DeclarationBlock = struct {
     }
 
     /// Writes the declarations to a CSS block, including starting and ending braces.
-    pub fn toCssBlock(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCssBlock(this: *const This, dest: *Printer) PrintErr!void {
         try dest.whitespace();
         try dest.writeChar('{');
         dest.indent();

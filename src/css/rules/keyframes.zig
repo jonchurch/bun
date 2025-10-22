@@ -128,7 +128,7 @@ pub const KeyframesName = union(enum) {
         }
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         const css_module_aimation_enabled = if (dest.css_module) |css_module| css_module.config.animation else false;
 
         switch (this.*) {
@@ -175,7 +175,7 @@ pub const KeyframeSelector = union(enum) {
     //     @panic(css.todo_stuff.depth);
     // }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         switch (this.*) {
             .percentage => |p| {
                 if (dest.minify and p.v == 1.0) {
@@ -213,7 +213,7 @@ pub const Keyframe = struct {
 
     const This = @This();
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         var first = true;
         for (this.selectors.items) |sel| {
             if (!first) {
@@ -244,7 +244,7 @@ pub const KeyframesRule = struct {
 
     const This = @This();
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         // #[cfg(feature = "sourcemap")]
         // dest.add_mapping(self.loc);
 

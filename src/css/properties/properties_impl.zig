@@ -10,7 +10,7 @@ const PropertyId = css.PropertyId;
 const Property = css.Property;
 
 pub const property_id_mixin = struct {
-    pub fn toCss(this: *const PropertyId, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const PropertyId, dest: *Printer) PrintErr!void {
         var first = true;
         const name = this.name();
         const prefix_value = this.prefix().orNone();
@@ -68,7 +68,7 @@ pub const property_id_mixin = struct {
 
 pub const property_mixin = struct {
     /// Serializes the CSS property, with an optional `!important` flag.
-    pub fn toCss(this: *const Property, comptime W: type, dest: *Printer(W), important: bool) PrintErr!void {
+    pub fn toCss(this: *const Property, dest: *Printer, important: bool) PrintErr!void {
         if (this.* == .custom) {
             try this.custom.name.toCss(W, dest);
             try dest.delim(':', false);

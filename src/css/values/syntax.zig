@@ -36,7 +36,7 @@ pub const SyntaxString = union(enum) {
         return css.implementDeepClone(@This(), this, allocator);
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         try dest.writeChar('"');
         switch (this.*) {
             .universal => try dest.writeChar('*'),
@@ -281,7 +281,7 @@ pub const SyntaxComponent = struct {
         return .{ .result = SyntaxComponent{ .kind = kind, .multiplier = multiplier } };
     }
 
-    pub fn toCss(this: *const SyntaxComponent, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const SyntaxComponent, dest: *Printer) PrintErr!void {
         try this.kind.toCss(W, dest);
         return switch (this.multiplier) {
             .none => {},
@@ -384,7 +384,7 @@ pub const SyntaxComponentKind = union(enum) {
         }
     }
 
-    pub fn toCss(this: *const SyntaxComponentKind, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const SyntaxComponentKind, dest: *Printer) PrintErr!void {
         return switch (this.*) {
             .length => try dest.writeStr("<length>"),
             .number => try dest.writeStr("<number>"),
@@ -466,7 +466,7 @@ pub const ParsedComponent = union(enum) {
 
     const This = @This();
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         return switch (this.*) {
             .length => |*v| try v.toCss(W, dest),
             .number => |*v| try CSSNumberFns.toCss(v, W, dest),

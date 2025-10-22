@@ -42,7 +42,7 @@ pub const FontFaceProperty = union(enum) {
 
     const This = @This();
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         const Helpers = struct {
             pub fn writeProperty(
                 d: *Printer(W),
@@ -95,7 +95,7 @@ pub const UnicodeRange = struct {
     /// Inclusive end of the range. In [0, 0x10FFFF].
     end: u32,
 
-    pub fn toCss(this: *const UnicodeRange, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const UnicodeRange, dest: *Printer) PrintErr!void {
         // Attempt to optimize the range to use question mark syntax.
         if (this.start != this.end) {
             // Find the first hex digit that differs between the start and end values.
@@ -321,7 +321,7 @@ pub const FontStyle = union(enum) {
         };
     }
 
-    pub fn toCss(this: *const FontStyle, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const FontStyle, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .normal => try dest.writeStr("normal"),
             .italic => try dest.writeStr("italic"),
@@ -396,7 +396,7 @@ pub const FontFormat = union(enum) {
         }
     }
 
-    pub fn toCss(this: *const FontFormat, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const FontFormat, dest: *Printer) PrintErr!void {
         // Browser support for keywords rather than strings is very limited.
         // https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/src
         switch (this.*) {
@@ -449,7 +449,7 @@ pub const Source = union(enum) {
         return .{ .result = .{ .local = local } };
     }
 
-    pub fn toCss(this: *const Source, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const Source, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .url => try this.url.toCss(W, dest),
             .local => {
@@ -522,7 +522,7 @@ pub const FontTechnology = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 };
@@ -569,7 +569,7 @@ pub const UrlSource = struct {
         };
     }
 
-    pub fn toCss(this: *const UrlSource, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const UrlSource, dest: *Printer) PrintErr!void {
         try this.url.toCss(W, dest);
         if (this.format) |*format| {
             try dest.whitespace();
@@ -600,7 +600,7 @@ pub const FontFaceRule = struct {
 
     const This = @This();
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         // #[cfg(feature = "sourcemap")]
         // dest.add_mapping(self.loc);
 

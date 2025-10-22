@@ -29,7 +29,7 @@ pub const ContainerName = struct {
 
     const This = @This();
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         return try CustomIdentFns.toCss(&this.v, W, dest);
     }
 
@@ -74,11 +74,11 @@ pub const ContainerSizeFeatureId = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 
-    pub fn toCssWithPrefix(this: *const @This(), prefix: []const u8, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCssWithPrefix(this: *const @This(), prefix: []const u8, dest: *Printer) PrintErr!void {
         try dest.writeStr(prefix);
         try this.toCss(W, dest);
     }
@@ -104,7 +104,7 @@ pub const StyleQuery = union(enum) {
         }
     },
 
-    pub fn toCss(this: *const StyleQuery, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const StyleQuery, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .feature => |f| try f.toCss(W, dest, false),
             .not => |c| {
@@ -214,7 +214,7 @@ pub const ContainerCondition = union(enum) {
         );
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .feature => |f| try f.toCss(W, dest),
             .not => |c| {
@@ -315,7 +315,7 @@ pub fn ContainerRule(comptime R: type) type {
 
         const This = @This();
 
-        pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             // #[cfg(feature = "sourcemap")]
             // dest.add_mapping(self.loc);
 

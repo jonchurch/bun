@@ -222,7 +222,7 @@ pub const BorderImageRepeat = struct {
         } };
     }
 
-    pub fn toCss(this: *const BorderImageRepeat, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const BorderImageRepeat, dest: *Printer) PrintErr!void {
         try this.horizontal.toCss(W, dest);
         if (this.horizontal != this.vertical) {
             try dest.writeStr(" ");
@@ -355,7 +355,7 @@ pub const BorderImageSlice = struct {
         return .{ .result = BorderImageSlice{ .offsets = offsets, .fill = fill } };
     }
 
-    pub fn toCss(this: *const BorderImageSlice, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const BorderImageSlice, dest: *Printer) PrintErr!void {
         try this.offsets.toCss(W, dest);
         if (this.fill) {
             try dest.writeStr(" fill");

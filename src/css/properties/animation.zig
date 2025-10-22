@@ -148,7 +148,7 @@ pub const Animation = struct {
         };
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         switch (this.name) {
             .none => {},
             inline .ident, .string => |name| {
@@ -232,7 +232,7 @@ pub const AnimationName = union(enum) {
         return css.implementEql(@This(), lhs, rhs);
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         const css_module_animation_enabled = if (dest.css_module) |css_module|
             css_module.config.animation
         else

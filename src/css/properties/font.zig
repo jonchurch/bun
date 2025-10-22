@@ -326,7 +326,7 @@ pub const FontFamily = union(enum) {
         return .{ .result = .{ .family_name = final_value } };
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         switch (this.*) {
             .generic => |val| {
                 try val.toCss(W, dest);
@@ -469,7 +469,7 @@ pub const FontStyle = union(enum) {
         }
     }
 
-    pub fn toCss(this: *const FontStyle, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const FontStyle, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .normal => try dest.writeStr("normal"),
             .italic => try dest.writeStr("italic"),
@@ -697,7 +697,7 @@ pub const Font = struct {
         } };
     }
 
-    pub fn toCss(this: *const Font, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const Font, dest: *Printer) PrintErr!void {
         if (!this.style.eql(&FontStyle.default())) {
             try this.style.toCss(W, dest);
             try dest.writeChar(' ');

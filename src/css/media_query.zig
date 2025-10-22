@@ -134,7 +134,7 @@ pub const Operator = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 };
@@ -215,7 +215,7 @@ pub const MediaQuery = struct {
         };
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         if (this.qualifier) |qual| {
             try qual.toCss(W, dest);
             try dest.writeChar(' ');
@@ -298,7 +298,7 @@ pub const Qualifier = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 
@@ -347,7 +347,7 @@ pub const MediaType = union(enum) {
     }
 };
 
-pub fn operationToCss(comptime QueryCondition: type, operator: Operator, conditions: *const ArrayList(QueryCondition), comptime W: type, dest: *Printer(W)) PrintErr!void {
+pub fn operationToCss(comptime QueryCondition: type, operator: Operator, conditions: *const ArrayList(QueryCondition), dest: *Printer) PrintErr!void {
     ValidQueryCondition(QueryCondition);
     const first = &conditions.items[0];
     try toCssWithParensIfNeeded(first, W, dest, first.needsParens(operator, &dest.targets));
@@ -378,7 +378,7 @@ pub const MediaCondition = union(enum) {
 
     const This = @This();
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .feature => |*f| {
                 try f.toCss(W, dest);
@@ -766,7 +766,7 @@ pub const MediaFeatureId = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 
@@ -887,7 +887,7 @@ pub fn QueryFeature(comptime FeatureId: type) type {
                 targets.shouldCompileSame(.media_interval_syntax);
         }
 
-        pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             try dest.writeChar('(');
 
             switch (this.*) {
@@ -1155,7 +1155,7 @@ pub const MediaFeatureComparison = enum(u8) {
         return css.enum_property_util.asStr(@This(), this);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         switch (this.*) {
             .equal => {
                 try dest.delim('-', true);
@@ -1430,7 +1430,7 @@ pub fn MediaFeatureName(comptime FeatureId: type) type {
             };
         }
 
-        pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             return switch (this.*) {
                 .standard => |v| v.toCss(W, dest),
                 .custom => |d| DashedIdentFns.toCss(&d, W, dest),
@@ -1438,7 +1438,7 @@ pub fn MediaFeatureName(comptime FeatureId: type) type {
             };
         }
 
-        pub fn toCssWithPrefix(this: *const This, prefix: []const u8, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCssWithPrefix(this: *const This, prefix: []const u8, dest: *Printer) PrintErr!void {
             return switch (this.*) {
                 .standard => |v| v.toCssWithPrefix(prefix, W, dest),
                 .custom => |d| {

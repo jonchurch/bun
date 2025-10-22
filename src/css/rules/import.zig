@@ -46,7 +46,7 @@ pub const ImportConditions = struct {
         };
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         if (this.layer) |*lyr| {
             try dest.writeStr(" layer");
             if (lyr.v) |l| {
@@ -206,7 +206,7 @@ pub const ImportRule = struct {
         return this.layer != null or this.supports != null or this.media.media_queries.items.len > 0;
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         const dep = if (dest.dependencies != null) dependencies.ImportDependency.new(
             dest.allocator,
             this,

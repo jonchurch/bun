@@ -334,7 +334,7 @@ pub const TrackRepeat = struct {
         }.parse);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         try dest.writeStr("repeat(");
         try this.count.toCss(W, dest);
         try dest.delim(',', false);
@@ -365,7 +365,7 @@ pub const TrackRepeat = struct {
     }
 };
 
-fn serializeLineNames(names: []const CustomIdent, comptime W: type, dest: *Printer(W)) PrintErr!void {
+fn serializeLineNames(names: []const CustomIdent, dest: *Printer) PrintErr!void {
     try dest.writeChar('[');
     var first = true;
     for (names) |*name| {
@@ -379,7 +379,7 @@ fn serializeLineNames(names: []const CustomIdent, comptime W: type, dest: *Print
     try dest.writeChar(']');
 }
 
-fn writeIdent(name: []const u8, comptime W: type, dest: *Printer(W)) PrintErr!void {
+fn writeIdent(name: []const u8, dest: *Printer) PrintErr!void {
     const css_module_grid_enabled = if (dest.css_module) |*css_module| css_module.config.grid else false;
     if (css_module_grid_enabled) {
         if (dest.css_module) |*css_module| {

@@ -109,7 +109,7 @@ pub fn Rect(comptime T: type) type {
             return .{ .result = This{ .top = first, .right = second, .bottom = third, .left = fourth } };
         }
 
-        pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
             try css.generic.toCss(T, &this.top, W, dest);
             const same_vertical = css.generic.eql(T, &this.top, &this.bottom);
             const same_horizontal = css.generic.eql(T, &this.right, &this.left);

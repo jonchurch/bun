@@ -179,7 +179,7 @@ pub const VendorPrefix = packed struct(u8) {
     /// Fields listed here so we can iterate them in the order we want
     pub const FIELDS: []const []const u8 = &.{ "webkit", "moz", "ms", "o", "none" };
 
-    pub fn toCss(this: *const VendorPrefix, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const VendorPrefix, dest: *Printer) PrintErr!void {
         return switch (this.asBits()) {
             VendorPrefix.asBits(.{ .webkit = true }) => dest.writeStr("-webkit-"),
             VendorPrefix.asBits(.{ .moz = true }) => dest.writeStr("-moz-"),
@@ -517,7 +517,7 @@ pub fn DefineRectShorthand(comptime T: type, comptime V: type) type {
             };
         }
 
-        pub fn toCss(this: *const T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const T, dest: *Printer) PrintErr!void {
             const rect = css_values.rect.Rect(V){
                 .top = this.top,
                 .right = this.right,
@@ -532,7 +532,7 @@ pub fn DefineRectShorthand(comptime T: type, comptime V: type) type {
 pub fn DefineSizeShorthand(comptime T: type, comptime V: type) type {
     if (std.meta.fields(T).len != 2) @compileError("DefineSizeShorthand must be used on a struct with 2 fields");
     return struct {
-        pub fn toCss(this: *const T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const T, dest: *Printer) PrintErr!void {
             const size: css_values.size.Size2D(V) = .{
                 .a = @field(this, std.meta.fields(T)[0].name),
                 .b = @field(this, std.meta.fields(T)[1].name),
@@ -788,7 +788,7 @@ pub fn DeriveParse(comptime T: type) type {
         //     unreachable;
         // }
 
-        // pub fn parse(this: *const T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        // pub fn parse(this: *const T, dest: *Printer) PrintErr!void {
         //     // to implement this, we need to cargo expand the derive macro
         //     _ = this; // autofix
         //     _ = dest; // autofix
@@ -810,7 +810,7 @@ pub fn DeriveToCss(comptime T: type) type {
     const is_enum_or_union_enum = tyinfo == .@"union" or tyinfo == .@"enum";
 
     return struct {
-        pub fn toCss(this: *const T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const T, dest: *Printer) PrintErr!void {
             if (comptime is_enum_or_union_enum) {
                 inline for (std.meta.fields(T), 0..) |field, i| {
                     if (@intFromEnum(this.*) == enum_fields[i].value) {
@@ -879,7 +879,7 @@ pub const enum_property_util = struct {
         return .{ .err = location.newUnexpectedTokenError(.{ .ident = ident }) };
     }
 
-    pub fn toCss(comptime T: type, this: *const T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(comptime T: type, this: *const T, dest: *Printer) PrintErr!void {
         return dest.writeStr(asStr(T, this));
     }
 };
@@ -907,7 +907,7 @@ pub fn DefineEnumProperty(comptime T: type) type {
             return .{ .err = location.newUnexpectedTokenError(.{ .ident = ident }) };
         }
 
-        pub fn toCss(this: *const T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+        pub fn toCss(this: *const T, dest: *Printer) PrintErr!void {
             return dest.writeStr(@tagName(this.*));
         }
 
@@ -1293,7 +1293,7 @@ pub fn ValidQualifiedRuleParser(comptime T: type) void {
 }
 
 pub const DefaultAtRule = struct {
-    pub fn toCss(_: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(_: *const @This(), dest: *Printer) PrintErr!void {
         return dest.newError(.fmt_error, null);
     }
 
@@ -6330,7 +6330,7 @@ pub const Token = union(TokenKind) {
         };
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         return switch (this.*) {
             .ident => |value| serializer.serializeIdentifier(value, dest) catch return dest.addFmtError(),
             .at_keyword => |value| {
@@ -6773,7 +6773,7 @@ pub const serializer = struct {
         return writer.writeAll("\"");
     }
 
-    pub fn serializeDimension(value: f32, unit: []const u8, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn serializeDimension(value: f32, unit: []const u8, dest: *Printer) PrintErr!void {
         // Check if the value is an integer - use Rust-compatible conversion
         const int_value: ?i32 = if (fract(value) == 0.0)
             bun.intFromFloat(i32, value)
@@ -7014,7 +7014,7 @@ pub const to_css = struct {
         return s.items;
     }
 
-    pub fn fromList(comptime T: type, this: []const T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn fromList(comptime T: type, this: []const T, dest: *Printer) PrintErr!void {
         const len = this.len;
         for (this, 0..) |*val, idx| {
             try val.toCss(W, dest);
@@ -7025,7 +7025,7 @@ pub const to_css = struct {
         return;
     }
 
-    pub fn fromBabyList(comptime T: type, this: *const bun.BabyList(T), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn fromBabyList(comptime T: type, this: *const bun.BabyList(T), dest: *Printer) PrintErr!void {
         const len = this.len;
         for (this.sliceConst(), 0..) |*val, idx| {
             try val.toCss(W, dest);
@@ -7036,7 +7036,7 @@ pub const to_css = struct {
         return;
     }
 
-    pub fn integer(comptime T: type, this: T, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn integer(comptime T: type, this: T, dest: *Printer) PrintErr!void {
         const MAX_LEN = comptime maxDigits(T);
         var buf: [MAX_LEN]u8 = undefined;
         const str = std.fmt.bufPrint(buf[0..], "{d}", .{this}) catch unreachable;

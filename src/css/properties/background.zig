@@ -129,7 +129,7 @@ pub const Background = struct {
         } };
     }
 
-    pub fn toCss(this: *const Background, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const Background, dest: *Printer) PrintErr!void {
         var has_output = false;
 
         if (!this.color.eql(&CssColor.default())) {
@@ -282,7 +282,7 @@ pub const BackgroundSize = union(enum) {
         }
     }
 
-    pub fn toCss(this: *const BackgroundSize, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const BackgroundSize, dest: *Printer) PrintErr!void {
         return switch (this.*) {
             .cover => dest.writeStr("cover"),
             .contain => dest.writeStr("contain"),
@@ -333,7 +333,7 @@ pub const BackgroundPosition = struct {
         return .{ .result = BackgroundPosition.fromPosition(pos) };
     }
 
-    pub fn toCss(this: *const BackgroundPosition, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const BackgroundPosition, dest: *Printer) PrintErr!void {
         const pos = this.intoPosition();
         return pos.toCss(W, dest);
     }
@@ -398,7 +398,7 @@ pub const BackgroundRepeat = struct {
         return .{ .result = .{ .x = x, .y = y } };
     }
 
-    pub fn toCss(this: *const BackgroundRepeat, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const BackgroundRepeat, dest: *Printer) PrintErr!void {
         const Repeat = BackgroundRepeatKeyword.repeat;
         const NoRepeat = BackgroundRepeatKeyword.@"no-repeat";
 

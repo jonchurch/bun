@@ -40,7 +40,7 @@ pub const DashedIdentReference = struct {
         return .{ .result = DashedIdentReference{ .ident = ident, .from = from } };
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         if (dest.css_module) |*css_module| {
             if (css_module.config.dashed_idents) {
                 if (try css_module.referenceDashed(W, dest, this.ident.v, &this.from, dest.loc.source_index)) |name| {
@@ -96,7 +96,7 @@ pub const DashedIdent = struct {
 
     const This = @This();
 
-    pub fn toCss(this: *const DashedIdent, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const DashedIdent, dest: *Printer) PrintErr!void {
         return dest.writeDashedIdent(this, true);
     }
 
@@ -122,7 +122,7 @@ pub const Ident = struct {
         return .{ .result = .{ .v = ident } };
     }
 
-    pub fn toCss(this: *const Ident, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const Ident, dest: *Printer) PrintErr!void {
         return css.serializer.serializeIdentifier(this.v, dest) catch return dest.addFmtError();
     }
 
@@ -288,7 +288,7 @@ pub const CustomIdent = struct {
 
     const This = @This();
 
-    pub fn toCss(this: *const CustomIdent, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const CustomIdent, dest: *Printer) PrintErr!void {
         return @This().toCssWithOptions(this, W, dest, true);
     }
 

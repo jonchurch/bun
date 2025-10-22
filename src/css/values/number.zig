@@ -54,7 +54,7 @@ pub const CSSIntegerFns = struct {
         // TODO: calc??
         return input.expectInteger();
     }
-    pub inline fn toCss(this: *const CSSInteger, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub inline fn toCss(this: *const CSSInteger, dest: *Printer) PrintErr!void {
         try css.to_css.integer(i32, this.*, W, dest);
     }
 };

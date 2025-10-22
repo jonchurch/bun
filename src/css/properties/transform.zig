@@ -37,7 +37,7 @@ pub const TransformList = struct {
         }
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         if (this.v.items.len == 0) {
             return dest.writeStr("none");
         }
@@ -70,7 +70,7 @@ pub const TransformList = struct {
         return this.toCssBase(W, dest);
     }
 
-    fn toCssBase(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    fn toCssBase(this: *const @This(), dest: *Printer) PrintErr!void {
         for (this.v.items) |*item| {
             try item.toCss(W, dest);
         }
@@ -535,7 +535,7 @@ pub const Transform = union(enum) {
         );
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         switch (this.*) {
             .translate => |t| {
                 if (dest.minify and t.x.isZero() and !t.y.isZero()) {

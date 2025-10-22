@@ -41,7 +41,7 @@ pub const FontPaletteValuesRule = struct {
         } };
     }
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         // #[cfg(feature = "sourcemap")]
         // dest.add_mapping(self.loc);
 
@@ -86,7 +86,7 @@ pub const FontPaletteValuesProperty = union(enum) {
     /// See [FontPaletteValuesRule](FontPaletteValuesRule).
     const This = @This();
 
-    pub fn toCss(this: *const This, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const This, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .font_family => |*f| {
                 try dest.writeStr("font-family");
@@ -146,7 +146,7 @@ pub const OverrideColors = struct {
         };
     }
 
-    pub fn toCss(this: *const OverrideColors, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const OverrideColors, dest: *Printer) PrintErr!void {
         try css.CSSIntegerFns.toCss(&@as(i32, @intCast(this.index)), W, dest);
         try dest.writeChar(' ');
         try this.color.toCss(W, dest);
@@ -187,7 +187,7 @@ pub const BasePalette = union(enum) {
         } else return .{ .err = location.newUnexpectedTokenError(.{ .ident = ident }) };
     }
 
-    pub fn toCss(this: *const BasePalette, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const BasePalette, dest: *Printer) PrintErr!void {
         switch (this.*) {
             .light => try dest.writeStr("light"),
             .dark => try dest.writeStr("dark"),

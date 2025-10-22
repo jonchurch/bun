@@ -150,7 +150,7 @@ pub const TokenList = struct {
         }
     }
 
-    pub fn toCssRaw(this: *const TokenList, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCssRaw(this: *const TokenList, dest: *Printer) PrintErr!void {
         for (this.v.items) |*token_or_value| {
             if (token_or_value.* == .token) {
                 try token_or_value.token.toCss(W, dest);
@@ -1225,7 +1225,7 @@ pub const EnvironmentVariableName = union(enum) {
         return .{ .result = .{ .unknown = ident } };
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return switch (this.*) {
             .ua => |ua| ua.toCss(W, dest),
             .custom => |custom| custom.toCss(W, dest),
@@ -1495,7 +1495,7 @@ pub const CustomPropertyName = union(enum) {
     /// An unknown CSS property.
     unknown: Ident,
 
-    pub fn toCss(this: *const CustomPropertyName, comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const CustomPropertyName, dest: *Printer) PrintErr!void {
         return switch (this.*) {
             .custom => |custom| try custom.toCss(W, dest),
             .unknown => |unknown| css.serializer.serializeIdentifier(unknown.v, dest) catch return dest.addFmtError(),

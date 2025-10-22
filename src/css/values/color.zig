@@ -1618,7 +1618,7 @@ pub const SystemColor = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 };
@@ -3045,7 +3045,7 @@ pub const ColorSpaceName = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 };
@@ -3145,7 +3145,7 @@ pub const HueInterpolationMethod = enum {
         return css.enum_property_util.parse(@This(), input);
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return css.enum_property_util.toCss(@This(), this, W, dest);
     }
 
@@ -3559,7 +3559,7 @@ pub fn writeComponents(
     return dest.writeChar(')');
 }
 
-pub fn writeComponent(c: f32, comptime W: type, dest: *Printer(W)) PrintErr!void {
+pub fn writeComponent(c: f32, dest: *Printer) PrintErr!void {
     if (std.math.isNan(c)) {
         return dest.writeStr("none");
     } else {

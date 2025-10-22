@@ -561,7 +561,7 @@ pub const Length = union(enum) {
         return .{ .result = .{ .value = len } };
     }
 
-    pub fn toCss(this: *const @This(), comptime W: type, dest: *Printer(W)) PrintErr!void {
+    pub fn toCss(this: *const @This(), dest: *Printer) PrintErr!void {
         return switch (this.*) {
             .value => |a| a.toCss(W, dest),
             .calc => |c| c.toCss(W, dest),
