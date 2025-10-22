@@ -155,7 +155,7 @@ pub const CssColor = union(enum) {
                                 rounded_alpha = @round(color.alphaF32() * 1000.0) / 1000.0;
                             }
 
-                            try CSSNumberFns.toCss(&rounded_alpha, W, dest);
+                            try CSSNumberFns.toCss(&rounded_alpha, dest);
                             try dest.writeChar(')');
                             return;
                         }
@@ -182,7 +182,6 @@ pub const CssColor = union(enum) {
                         lab.a,
                         lab.b,
                         lab.alpha,
-                        W,
                         dest,
                     ),
                     .lch => |*lch| writeComponents(
@@ -191,7 +190,6 @@ pub const CssColor = union(enum) {
                         lch.c,
                         lch.h,
                         lch.alpha,
-                        W,
                         dest,
                     ),
                     .oklab => |*oklab| writeComponents(
@@ -200,7 +198,6 @@ pub const CssColor = union(enum) {
                         oklab.a,
                         oklab.b,
                         oklab.alpha,
-                        W,
                         dest,
                     ),
                     .oklch => |*oklch| writeComponents(
@@ -209,12 +206,11 @@ pub const CssColor = union(enum) {
                         oklch.c,
                         oklch.h,
                         oklch.alpha,
-                        W,
                         dest,
                     ),
                 };
             },
-            .predefined => |predefined| return writePredefined(predefined, W, dest),
+            .predefined => |predefined| return writePredefined(predefined, dest),
             .float => |*float| {
                 // Serialize as hex.
                 const srgb = SRGB.fromFloatColor(float.*);
@@ -3538,23 +3534,22 @@ pub fn writeComponents(
     b: f32,
     c: f32,
     alpha: f32,
-    comptime W: type,
-    dest: *Printer(W),
+    dest: *Printer,
 ) PrintErr!void {
     try dest.writeStr(name);
     try dest.writeChar('(');
     if (std.math.isNan(a)) {
         try dest.writeStr("none");
     } else {
-        try (Percentage{ .v = a }).toCss(W, dest);
+        try (Percentage{ .v = a }).toCss(dest);
     }
     try dest.writeChar(' ');
-    try writeComponent(b, W, dest);
+    try writeComponent(b, dest);
     try dest.writeChar(' ');
-    try writeComponent(c, W, dest);
+    try writeComponent(c, dest);
     if (std.math.isNan(alpha) or @abs(alpha - 1.0) > std.math.floatEps(f32)) {
         try dest.delim('/', true);
-        try writeComponent(alpha, W, dest);
+        try writeComponent(alpha, dest);
     }
     return dest.writeChar(')');
 }
@@ -3563,14 +3558,13 @@ pub fn writeComponent(c: f32, dest: *Printer) PrintErr!void {
     if (std.math.isNan(c)) {
         return dest.writeStr("none");
     } else {
-        return CSSNumberFns.toCss(&c, W, dest);
+        return CSSNumberFns.toCss(&c, dest);
     }
 }
 
 pub fn writePredefined(
     predefined: *const PredefinedColor,
-    comptime W: type,
-    dest: *Printer(W),
+    dest: *Printer,
 ) PrintErr!void {
     const name, const a, const b, const c, const alpha = switch (predefined.*) {
         .srgb => |*rgb| .{ "srgb", rgb.r, rgb.g, rgb.b, rgb.alpha },
@@ -3587,15 +3581,15 @@ pub fn writePredefined(
     try dest.writeStr("color(");
     try dest.writeStr(name);
     try dest.writeChar(' ');
-    try writeComponent(a, W, dest);
+    try writeComponent(a, dest);
     try dest.writeChar(' ');
-    try writeComponent(b, W, dest);
+    try writeComponent(b, dest);
     try dest.writeChar(' ');
-    try writeComponent(c, W, dest);
+    try writeComponent(c, dest);
 
     if (std.math.isNan(alpha) or @abs(alpha - 1.0) > std.math.floatEps(f32)) {
         try dest.delim('/', true);
-        try writeComponent(alpha, W, dest);
+        try writeComponent(alpha, dest);
     }
 
     return dest.writeChar(')');

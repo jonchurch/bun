@@ -159,10 +159,9 @@ pub const Printer = blk: {
         }
 
         inline fn getWrittenAmt(writer: Writer) usize {
-            return switch (Writer) {
-                ArrayList(u8).Writer => writer.context.self.items.len,
-                *bun.js_printer.BufferWriter => writer.written.len,
-                else => @compileError("Dunno what to do with this type yo: " ++ @typeName(Writer)),
+            return switch (writer.vtable) {
+                std.Io.Writer.Allocating.vtable => return @as(*std.Io.Writer.Allocating, @fieldParentPtr("writer", writer)).written().len,
+                else => @panic("css: got bad writer type"),
             };
         }
 

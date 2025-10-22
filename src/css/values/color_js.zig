@@ -423,7 +423,7 @@ pub fn jsFunctionColor(globalThis: *jsc.JSGlobalObject, callFrame: *jsc.CallFram
                 return globalThis.throw("color() internal error: {s}", .{@errorName(err)});
             };
 
-            return bun.String.createUTF8ForJS(globalThis, dest.items);
+            return bun.String.createUTF8ForJS(globalThis, dest.written());
         },
     }
 }
